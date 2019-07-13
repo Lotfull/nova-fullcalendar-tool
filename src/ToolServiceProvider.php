@@ -17,31 +17,11 @@ class ToolServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'nova-fullcalendar-tool');
-
-        $this->app->booted(function () {
-            $this->routes();
-        });
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'calendar');
 
         Nova::serving(function (ServingNova $event) {
             //
         });
-    }
-
-    /**
-     * Register the tool's routes.
-     *
-     * @return void
-     */
-    protected function routes()
-    {
-        if ($this->app->routesAreCached()) {
-            return;
-        }
-
-        Route::middleware(['nova', Authorize::class])
-                ->prefix('nova-vendor/nova-fullcalendar-tool')
-                ->group(__DIR__.'/../routes/api.php');
     }
 
     /**

@@ -10516,8 +10516,8 @@ module.exports = __webpack_require__(23);
 
 Nova.booting(function (Vue, router, store) {
     router.addRoutes([{
-        name: 'nova-fullcalendar-tool',
-        path: '/nova-fullcalendar-tool',
+        name: 'calendar',
+        path: '/calendar',
         component: __webpack_require__(6)
     }]);
 });
@@ -11081,6 +11081,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -11088,63 +11089,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
-var seance_link = function seance_link(seance) {
-    return '/crm/resources/seances/' + seance.id;
-};
 var seances_request_url = '/v1/calendar/seances';
 var filters_request_url = '/v1/calendar/filters';
-
-var ru_translation = {
-    'first_name': 'Имя',
-    'last_name': 'Фамилия',
-    'mid_name': 'Отчество',
-    'phone': 'Номер телефона',
-    'email': 'Email',
-    'birthdate': 'Дата рождения',
-    'sex': 'Пол',
-    'passport_id': 'Номер паспорта',
-    'issue_date': 'Дата выдачи паспорта',
-    'issued_by': 'Орган выдачи паспорта',
-    'driving_license': 'Номер водительского удостоверения',
-    'driving_exp': 'Водительский стаж',
-    'driving_cat': 'Водительские категории',
-    'height': 'Рост',
-    'weight': 'Вес',
-    'clothing_size': 'Размер одежды',
-    'shoe_size': 'Размер обуви'
-};
-
-var prepare_client_data = function prepare_client_data(client_data_json) {
-    var result = '';
-    for (var a in client_data_json) {
-        if (!!client_data_json[a]) result += "<p>" + ru_translation[a] + ": " + client_data_json[a] + "</p>";
-    }
-    return result;
-};
-
-var calendar_event_from_seance = function calendar_event_from_seance(seance) {
-    var time = moment(seance.time, ['hh:mm:ss']);
-    var start = moment(seance.date).set({
-        hour: time.get('hour'),
-        minute: time.get('minute')
-    });
-    var end = moment(start).add({
-        minute: seance.duration
-    });
-    return {
-        title: seance.description,
-        start: start.format(),
-        end: end.format(),
-        extendedProps: {
-            description: seance.description,
-            price: seance.price,
-            duration: seance.duration,
-            service: seance.service.name,
-            client: prepare_client_data(seance.clients[0])
-        },
-        url: seance_link(seance)
-    };
-};
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     components: {
@@ -11153,10 +11099,6 @@ var calendar_event_from_seance = function calendar_event_from_seance(seance) {
     methods: {
         filter_update: function filter_update() {
             this.set_events();
-        },
-        filter_reset: function filter_reset() {
-            this.selected_club = '';
-            this.selected_service = '';
         },
         fetch_seances: function fetch_seances() {
             var query = seances_request_url;
@@ -11171,10 +11113,7 @@ var calendar_event_from_seance = function calendar_event_from_seance(seance) {
             var _this = this;
 
             this.fetch_seances().then(function (response) {
-                var seances = response.data;
-                if (seances) {
-                    _this.calendarEvents = seances.map(calendar_event_from_seance);
-                }
+                if (response.data) _this.calendarEvents = response.data;
             });
         },
         handleDateClick: function handleDateClick(info) {
@@ -18418,102 +18357,104 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("heading", { staticClass: "mb-6" }, [
-        _vm._v("Nova Fullcalendar Tool")
-      ]),
+      _c("heading", { staticClass: "mb-6" }, [_vm._v("Календарь")]),
       _vm._v(" "),
-      _c("span", [_vm._v("Клуб: ")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.club_selected,
-              expression: "club_selected"
+      _c("div", { staticClass: "mb-6" }, [
+        _c("span", [_vm._v("Клуб: ")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.club_selected,
+                expression: "club_selected"
+              }
+            ],
+            on: {
+              input: _vm.filter_update,
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.club_selected = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
             }
-          ],
-          on: {
-            input: _vm.filter_update,
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.club_selected = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            }
-          }
-        },
-        [
-          _c("option", { attrs: { value: "" } }),
-          _vm._v(" "),
-          _vm._l(_vm.filters, function(option) {
-            return _c("option", { domProps: { value: option } }, [
-              _vm._v("\n            " + _vm._s(option.name) + "\n        ")
-            ])
-          })
-        ],
-        2
-      ),
-      _vm._v(" "),
-      _c("span", [_vm._v("Услуга: ")]),
-      _vm._v(" "),
-      _c(
-        "select",
-        {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.service_selected,
-              expression: "service_selected"
-            }
-          ],
-          on: {
-            input: _vm.filter_update,
-            change: function($event) {
-              var $$selectedVal = Array.prototype.filter
-                .call($event.target.options, function(o) {
-                  return o.selected
-                })
-                .map(function(o) {
-                  var val = "_value" in o ? o._value : o.value
-                  return val
-                })
-              _vm.service_selected = $event.target.multiple
-                ? $$selectedVal
-                : $$selectedVal[0]
-            }
-          }
-        },
-        [
-          _c("option", { attrs: { value: "" } }),
-          _vm._v(" "),
-          _vm._l(
-            _vm.club_selected.services ||
-              _vm.filters.flatMap(function(a) {
-                return a.services
-              }),
-            function(option) {
-              return _c("option", { domProps: { value: option.id } }, [
-                _vm._v("\n            " + _vm._s(option.name) + "\n        ")
+          },
+          [
+            _c("option", { attrs: { value: "" } }),
+            _vm._v(" "),
+            _vm._l(_vm.filters, function(option) {
+              return _c("option", { domProps: { value: option } }, [
+                _vm._v(
+                  "\n                " + _vm._s(option.name) + "\n            "
+                )
               ])
+            })
+          ],
+          2
+        ),
+        _vm._v(" "),
+        _c("span", [_vm._v("Услуга: ")]),
+        _vm._v(" "),
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.service_selected,
+                expression: "service_selected"
+              }
+            ],
+            on: {
+              input: _vm.filter_update,
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.service_selected = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
             }
-          )
-        ],
-        2
-      ),
-      _vm._v(" "),
-      _c("button", { on: { click: _vm.filter_reset } }, [
-        _vm._v("Сбросить фильтр")
+          },
+          [
+            _c("option", { attrs: { value: "" } }),
+            _vm._v(" "),
+            _vm._l(
+              _vm.club_selected.services ||
+                _vm.filters.flatMap(function(a) {
+                  return a.services
+                }),
+              function(option) {
+                return _c("option", { domProps: { value: option.id } }, [
+                  _vm._v(
+                    "\n                " +
+                      _vm._s(option.name) +
+                      "\n            "
+                  )
+                ])
+              }
+            )
+          ],
+          2
+        )
       ]),
       _vm._v(" "),
       _c("FullCalendar", {

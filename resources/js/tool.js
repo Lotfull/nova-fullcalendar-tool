@@ -1,8 +1,8 @@
 Nova.booting((Vue, router, store) => {
     router.addRoutes([
         {
-            name: 'nova-fullcalendar-tool',
-            path: '/nova-fullcalendar-tool',
+            name: 'calendar',
+            path: '/calendar',
             component: require('./components/Tool'),
         },
     ])

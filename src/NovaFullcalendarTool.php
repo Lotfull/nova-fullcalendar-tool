@@ -14,8 +14,8 @@ class NovaFullcalendarTool extends Tool
      */
     public function boot()
     {
-        Nova::script('nova-fullcalendar-tool', __DIR__.'/../dist/js/tool.js');
-        Nova::style('nova-fullcalendar-tool', __DIR__.'/../dist/css/tool.css');
+        Nova::script('calendar', __DIR__.'/../dist/js/tool.js');
+        Nova::style('calendar', __DIR__.'/../dist/css/tool.css');
     }
 
     /**
@@ -25,6 +25,6 @@ class NovaFullcalendarTool extends Tool
      */
     public function renderNavigation()
     {
-        return view('nova-fullcalendar-tool::navigation');
+        return view('calendar::navigation');
     }
 }
