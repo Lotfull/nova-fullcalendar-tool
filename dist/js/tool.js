@@ -11082,6 +11082,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -11100,6 +11102,10 @@ var filters_request_url = '/v1/calendar/filters';
         filter_update: function filter_update() {
             this.set_events();
         },
+        filter_reset: function filter_reset() {
+            this.selected_club = '';
+            this.selected_service = '';
+        },
         fetch_seances: function fetch_seances() {
             var query = seances_request_url;
             if (this.service_selected) query += "?service=" + this.service_selected;else if (this.club_selected) query += "?club=" + this.club_selected.id;
@@ -11114,6 +11120,13 @@ var filters_request_url = '/v1/calendar/filters';
 
             this.fetch_seances().then(function (response) {
                 if (response.data) _this.calendarEvents = response.data;
+                // this.$refs.fullCalendar.$emit('changeView');
+                // this.$refs.fullCalendar.$emit('refetchEvents');
+                // this.$refs.fullCalendar.$emit('refetch-events');
+                // this.$refs.fullCalendar.$emit('render-events');
+                // this.$refs.fullCalendar.$emit('rerender-events');
+                // this.$refs.fullCalendar.$emit('rerenderEvents');
+                // this.$refs.fullCalendar.$emit('renderEvents');
             });
         },
         handleDateClick: function handleDateClick(info) {
@@ -18374,20 +18387,22 @@ var render = function() {
               }
             ],
             on: {
-              input: _vm.filter_update,
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.club_selected = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.club_selected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                _vm.filter_update
+              ]
             }
           },
           [
@@ -18418,20 +18433,22 @@ var render = function() {
               }
             ],
             on: {
-              input: _vm.filter_update,
-              change: function($event) {
-                var $$selectedVal = Array.prototype.filter
-                  .call($event.target.options, function(o) {
-                    return o.selected
-                  })
-                  .map(function(o) {
-                    var val = "_value" in o ? o._value : o.value
-                    return val
-                  })
-                _vm.service_selected = $event.target.multiple
-                  ? $$selectedVal
-                  : $$selectedVal[0]
-              }
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.service_selected = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                _vm.filter_update
+              ]
             }
           },
           [
@@ -18454,7 +18471,11 @@ var render = function() {
             )
           ],
           2
-        )
+        ),
+        _vm._v(" "),
+        _c("button", { on: { click: _vm.filter_reset } }, [
+          _vm._v("Сбросить фильтр")
+        ])
       ]),
       _vm._v(" "),
       _c("FullCalendar", {

@@ -4,7 +4,7 @@
 
         <div class="mb-6">
             <span>Клуб: </span>
-            <select v-model="club_selected" @input="filter_update">
+            <select v-model="club_selected" @change="filter_update">
                 <option value=""></option>
                 <option v-for="option in filters" v-bind:value="option">
                     {{ option.name }}
@@ -12,13 +12,15 @@
             </select>
 
             <span>Услуга: </span>
-            <select v-model="service_selected" @input="filter_update">
+            <select v-model="service_selected" @change="filter_update">
                 <option value=""></option>
                 <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
                         v-bind:value="option.id">
                     {{ option.name }}
                 </option>
             </select>
+
+            <button @click="filter_reset">Сбросить фильтр</button>
         </div>
 
         <FullCalendar
@@ -57,6 +59,10 @@
             filter_update() {
                 this.set_events()
             },
+            filter_reset() {
+                this.selected_club = '';
+                this.selected_service = '';
+            },
             fetch_seances() {
                 let query = seances_request_url;
                 if (this.service_selected)
@@ -73,6 +79,13 @@
                 this.fetch_seances().then(response => {
                     if (response.data)
                         this.calendarEvents = response.data;
+                    // this.$refs.fullCalendar.$emit('changeView');
+                    // this.$refs.fullCalendar.$emit('refetchEvents');
+                    // this.$refs.fullCalendar.$emit('refetch-events');
+                    // this.$refs.fullCalendar.$emit('render-events');
+                    // this.$refs.fullCalendar.$emit('rerender-events');
+                    // this.$refs.fullCalendar.$emit('rerenderEvents');
+                    // this.$refs.fullCalendar.$emit('renderEvents');
                 });
             },
             handleDateClick(info) {
