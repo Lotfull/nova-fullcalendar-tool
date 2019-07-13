@@ -3,7 +3,7 @@
         <heading class="mb-6">Nova Fullcalendar Tool</heading>
 
         <span>Клуб: </span>
-        <select v-model="club_selected" @input="filter">
+        <select v-model="club_selected" @input="filter_update">
             <option value=""></option>
             <option v-for="option in filters" v-bind:value="option">
                 {{ option.name }}
@@ -11,17 +11,20 @@
         </select>
 
         <span>Услуга: </span>
-        <select v-model="service_selected" @input="filter">
+        <select v-model="service_selected" @input="filter_update">
             <option value=""></option>
-            <option v-for="option in club_selected.services" v-bind:value="option.id">
+            <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))" v-bind:value="option.id">
                 {{ option.name }}
             </option>
         </select>
+
+        <button @click="filter_reset">Сбросить фильтр</button>
 
         <FullCalendar
                 @dateClick="handleDateClick"
                 @eventClick="handleEventClick"
                 @eventRender="handleEventRender"
+                default-view="timeGridWeek"
                 ref="fullCalendar"
                 :plugins="calendarPlugins"
                 :weekends="calendarWeekends"
@@ -104,8 +107,12 @@
             FullCalendar
         },
         methods: {
-            filter() {
+            filter_update() {
                 this.set_events()
+            },
+            filter_reset() {
+                this.selected_club = '';
+                this.selected_service = '';
             },
             fetch_seances() {
                 let query = seances_request_url;
@@ -135,8 +142,11 @@
                 }
             },
             handleEventClick(info) {
-                if (info.url)
+                console.log('handleEventClick', info.url);
+                if (info.url) {
                     window.open(info.url, "_blank");
+                    return false;
+                }
             },
             handleEventRender(info) {
                 new Tooltip(info.el, {
@@ -163,9 +173,7 @@
                     interactionPlugin
                 ],
                 calendarWeekends: true,
-                calendarEvents: [
-                    {title: "Today", start: new Date()}
-                ]
+                calendarEvents: []
             };
         },
         mounted() {

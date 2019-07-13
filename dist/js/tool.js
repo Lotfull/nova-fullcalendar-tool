@@ -11078,6 +11078,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -11088,6 +11091,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var seance_link = function seance_link(seance) {
     return '/crm/resources/seances/' + seance.id;
 };
+var seances_request_url = '/v1/calendar/seances';
+var filters_request_url = '/v1/calendar/filters';
 
 var ru_translation = {
     'first_name': 'Имя',
@@ -11146,26 +11151,27 @@ var calendar_event_from_seance = function calendar_event_from_seance(seance) {
         FullCalendar: __WEBPACK_IMPORTED_MODULE_0__fullcalendar_vue__["a" /* default */]
     },
     methods: {
-        filter: function filter() {
+        filter_update: function filter_update() {
             this.set_events();
         },
+        filter_reset: function filter_reset() {
+            this.selected_club = '';
+            this.selected_service = '';
+        },
         fetch_seances: function fetch_seances() {
-            var query = '/v1/calendar/seances';
-            console.log('this.club_selected', this.club_selected);
-            console.log('this.service_selected', this.service_selected);
+            var query = seances_request_url;
             if (this.service_selected) query += "?service=" + this.service_selected;else if (this.club_selected) query += "?club=" + this.club_selected.id;
 
             return axios.get(query);
         },
         fetch_filters: function fetch_filters() {
-            return axios.get('/v1/calendar/filters');
+            return axios.get(filters_request_url);
         },
         set_events: function set_events() {
             var _this = this;
 
             this.fetch_seances().then(function (response) {
                 var seances = response.data;
-                console.log('seances', seances);
                 if (seances) {
                     _this.calendarEvents = seances.map(calendar_event_from_seance);
                 }
@@ -11179,7 +11185,11 @@ var calendar_event_from_seance = function calendar_event_from_seance(seance) {
             }
         },
         handleEventClick: function handleEventClick(info) {
-            if (info.url) window.open(info.url, "_blank");
+            console.log('handleEventClick', info.url);
+            if (info.url) {
+                window.open(info.url, "_blank");
+                return false;
+            }
         },
         handleEventRender: function handleEventRender(info) {
             new __WEBPACK_IMPORTED_MODULE_4_tooltip_js__["a" /* default */](info.el, {
@@ -11195,19 +11205,14 @@ var calendar_event_from_seance = function calendar_event_from_seance(seance) {
         return {
             club_selected: '',
             service_selected: '',
-            filters: {
-                club: [],
-                service: []
-            },
+            filters: {},
             calendarPlugins: [__WEBPACK_IMPORTED_MODULE_1__fullcalendar_daygrid___default.a, __WEBPACK_IMPORTED_MODULE_2__fullcalendar_timegrid___default.a, __WEBPACK_IMPORTED_MODULE_3__fullcalendar_interaction___default.a],
             calendarWeekends: true,
-            calendarEvents: [{ title: "Today", start: new Date() }]
+            calendarEvents: []
         };
     },
     mounted: function mounted() {
         var _this2 = this;
-
-        console.log('mounted()');
 
         this.fetch_filters().then(function (response) {
             _this2.filters = response.data;
@@ -18431,7 +18436,7 @@ var render = function() {
             }
           ],
           on: {
-            input: _vm.filter,
+            input: _vm.filter_update,
             change: function($event) {
               var $$selectedVal = Array.prototype.filter
                 .call($event.target.options, function(o) {
@@ -18473,7 +18478,7 @@ var render = function() {
             }
           ],
           on: {
-            input: _vm.filter,
+            input: _vm.filter_update,
             change: function($event) {
               var $$selectedVal = Array.prototype.filter
                 .call($event.target.options, function(o) {
@@ -18492,18 +18497,29 @@ var render = function() {
         [
           _c("option", { attrs: { value: "" } }),
           _vm._v(" "),
-          _vm._l(_vm.club_selected.services, function(option) {
-            return _c("option", { domProps: { value: option.id } }, [
-              _vm._v("\n            " + _vm._s(option.name) + "\n        ")
-            ])
-          })
+          _vm._l(
+            _vm.club_selected.services ||
+              _vm.filters.flatMap(function(a) {
+                return a.services
+              }),
+            function(option) {
+              return _c("option", { domProps: { value: option.id } }, [
+                _vm._v("\n            " + _vm._s(option.name) + "\n        ")
+              ])
+            }
+          )
         ],
         2
       ),
       _vm._v(" "),
+      _c("button", { on: { click: _vm.filter_reset } }, [
+        _vm._v("Сбросить фильтр")
+      ]),
+      _vm._v(" "),
       _c("FullCalendar", {
         ref: "fullCalendar",
         attrs: {
+          "default-view": "timeGridWeek",
           plugins: _vm.calendarPlugins,
           weekends: _vm.calendarWeekends,
           events: _vm.calendarEvents,
