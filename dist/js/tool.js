@@ -18406,7 +18406,7 @@ var render = function() {
             }
           },
           [
-            _c("option", { attrs: { value: "" } }),
+            _c("option", { attrs: { value: "" } }, [_vm._v("Все клубы")]),
             _vm._v(" "),
             _vm._l(_vm.filters, function(option) {
               return _c("option", { domProps: { value: option } }, [
@@ -18452,7 +18452,7 @@ var render = function() {
             }
           },
           [
-            _c("option", { attrs: { value: "" } }),
+            _c("option", { attrs: { value: "" } }, [_vm._v("Все услуги")]),
             _vm._v(" "),
             _vm._l(
               _vm.club_selected.services ||
@@ -18473,9 +18473,18 @@ var render = function() {
           2
         ),
         _vm._v(" "),
-        _c("button", { on: { click: _vm.filter_reset } }, [
-          _vm._v("Сбросить фильтр")
-        ])
+        _c(
+          "button",
+          {
+            on: {
+              click: function($event) {
+                _vm.club_selected = ""
+                _vm.service_selected = ""
+              }
+            }
+          },
+          [_vm._v("Сбросить фильтр")]
+        )
       ]),
       _vm._v(" "),
       _c("FullCalendar", {

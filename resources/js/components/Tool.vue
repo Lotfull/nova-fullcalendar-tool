@@ -5,7 +5,7 @@
         <div class="mb-6">
             <span>Клуб: </span>
             <select v-model="club_selected" @change="filter_update">
-                <option value=""></option>
+                <option value="">Все клубы</option>
                 <option v-for="option in filters" v-bind:value="option">
                     {{ option.name }}
                 </option>
@@ -13,14 +13,14 @@
 
             <span>Услуга: </span>
             <select v-model="service_selected" @change="filter_update">
-                <option value=""></option>
+                <option value="">Все услуги</option>
                 <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
                         v-bind:value="option.id">
                     {{ option.name }}
                 </option>
             </select>
 
-            <button @click="filter_reset">Сбросить фильтр</button>
+            <button @click="club_selected = ''; service_selected = ''">Сбросить фильтр</button>
         </div>
 
         <FullCalendar
