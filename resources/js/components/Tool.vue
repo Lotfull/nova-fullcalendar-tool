@@ -20,7 +20,7 @@
                 </option>
             </select>
 
-            <button @click="club_selected = ''; service_selected = ''">Сбросить фильтр</button>
+<!--            <button @click="club_selected = ''; service_selected = ''">Сбросить фильтр</button>-->
         </div>
 
         <FullCalendar
@@ -59,10 +59,10 @@
             filter_update() {
                 this.set_events()
             },
-            filter_reset() {
-                this.selected_club = '';
-                this.selected_service = '';
-            },
+            // filter_reset() {
+            //     this.selected_club = '';
+            //     this.selected_service = '';
+            // },
             fetch_seances() {
                 let query = seances_request_url;
                 if (this.service_selected)
@@ -79,20 +79,13 @@
                 this.fetch_seances().then(response => {
                     if (response.data)
                         this.calendarEvents = response.data;
-                    // this.$refs.fullCalendar.$emit('changeView');
-                    // this.$refs.fullCalendar.$emit('refetchEvents');
-                    // this.$refs.fullCalendar.$emit('refetch-events');
-                    // this.$refs.fullCalendar.$emit('render-events');
-                    // this.$refs.fullCalendar.$emit('rerender-events');
-                    // this.$refs.fullCalendar.$emit('rerenderEvents');
-                    // this.$refs.fullCalendar.$emit('renderEvents');
                 });
             },
             handleDateClick(info) {
                 if (this.service_selected) {
-                    window.open(`/crm/resources/seances/new?viaResource=services&viaResourceId=${this.service_selected}&viaRelationship=seances`, "_blank");
+                    window.open(`/resources/seances/new?viaResource=services&viaResourceId=${this.service_selected}&viaRelationship=seances`, "_blank");
                 } else {
-                    window.open(`/crm/resources/seances/new`, "_blank");
+                    window.open(`/resources/seances/new`, "_blank");
                 }
             },
             handleEventClick(info) {
@@ -127,14 +120,14 @@
                     interactionPlugin
                 ],
                 calendarWeekends: true,
-                calendarEvents: []
+                calendarEvents: [],
             };
         },
         mounted() {
+            this.set_events();
             this.fetch_filters().then(response => {
                 this.filters = response.data;
             });
-            this.set_events();
         },
     }
 
