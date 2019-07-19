@@ -11,9 +11,9 @@
                 </option>
             </select>
 
-            <span>Услуга: </span>
+            <span style="margin-left: 1em">Активность: </span>
             <select v-model="service_selected" @change="filter_update">
-                <option value="">Все услуги</option>
+                <option value="">Все активности</option>
                 <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
                         v-bind:value="option.id">
                     {{ option.name }}
@@ -32,6 +32,7 @@
                 :plugins="calendarPlugins"
                 :weekends="calendarWeekends"
                 :events="calendarEvents"
+                :locale="ruLocale"
                 :header="{
                 left: 'prev,next today',
                 center: 'title',
@@ -46,6 +47,7 @@
     import dayGridPlugin from "@fullcalendar/daygrid";
     import timeGridPlugin from "@fullcalendar/timegrid";
     import interactionPlugin from "@fullcalendar/interaction";
+    import ruLocale from '@fullcalendar/core/locales/ru';
     import Tooltip from 'tooltip.js';
 
     let seances_request_url = '/v1/calendar/seances';
@@ -121,6 +123,7 @@
                 ],
                 calendarWeekends: true,
                 calendarEvents: [],
+                ruLocale: ruLocale
             };
         },
         mounted() {
