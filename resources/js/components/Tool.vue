@@ -2,25 +2,33 @@
     <div>
         <heading class="mb-6">Календарь</heading>
 
-        <div class="mb-6">
-            <span>Клуб: </span>
-            <select v-model="club_selected" @change="filter_update">
-                <option value="">Все клубы</option>
-                <option v-for="option in filters" v-bind:value="option">
-                    {{ option.name }}
-                </option>
-            </select>
+        <div style="display: flex">
+            <div style="width: 25%">
+                <h3 class="text-sm uppercase tracking-wide text-80 bg-30 p-3">Клуб</h3>
+                <div class="p-2">
+                    <select class="form-control-sm form-select select-w" v-model="club_selected"
+                            @change="filter_update">
+                        <option value="">Все клубы</option>
+                        <option v-for="option in filters" v-bind:value="option">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
 
-            <span style="margin-left: 1em">Активность: </span>
-            <select v-model="service_selected" @change="filter_update">
-                <option value="">Все активности</option>
-                <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
-                        v-bind:value="option.id">
-                    {{ option.name }}
-                </option>
-            </select>
-
-<!--            <button @click="club_selected = ''; service_selected = ''">Сбросить фильтр</button>-->
+            <div style="width: 25%">
+                <h3 class="text-sm uppercase tracking-wide text-80 bg-30 p-3">Активность</h3>
+                <div class="p-2">
+                    <select class="form-control-sm form-select select-w" v-model="service_selected"
+                            @change="filter_update">
+                        <option value="">Все активности</option>
+                        <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
+                                v-bind:value="option.id">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <FullCalendar
@@ -33,8 +41,11 @@
                 :weekends="calendarWeekends"
                 :events="calendarEvents"
                 :locale="ruLocale"
+                :min-time="minTime"
+                :now-indicator="true"
+                :custom-buttons="customButtons"
                 :header="{
-                left: 'prev,next today',
+                left: 'prev,next today createSeanceButton',
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             }"
@@ -61,10 +72,6 @@
             filter_update() {
                 this.set_events()
             },
-            // filter_reset() {
-            //     this.selected_club = '';
-            //     this.selected_service = '';
-            // },
             fetch_seances() {
                 let query = seances_request_url;
                 if (this.service_selected)
@@ -123,7 +130,16 @@
                 ],
                 calendarWeekends: true,
                 calendarEvents: [],
-                ruLocale: ruLocale
+                ruLocale: ruLocale,
+                minTime: "06:00:00",
+                customButtons: {
+                    createSeanceButton: {
+                        text: 'Добавить сеанс',
+                        click: function () {
+                            alert('clicked the custom button!');
+                        }
+                    }
+                }
             };
         },
         mounted() {
@@ -149,5 +165,28 @@
         border-radius: 3px;
         border: 1px solid #3788d8;
         padding: 5px;
+    }
+
+    .fc-today {
+        background-color: inherit !important;
+    }
+
+    .select-w {
+        width: 100%;
+    }
+
+    .fc-button-primary {
+        color: var(--white);
+        background-color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .fc-button-active {
+        background-color: var(--90);
+        border-color: var(--90);
+    }
+
+    .fc-button {
+        border-radius: 0.5rem;
     }
 </style>
