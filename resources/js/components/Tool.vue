@@ -22,7 +22,7 @@
                     <select class="form-control-sm form-select select-w" v-model="service_selected"
                             @change="filter_update">
                         <option value="">Все активности</option>
-                        <option v-for="option in (club_selected.services || filters.flatMap(a => a.services))"
+                        <option v-for="option in (club_selected.services || Array.isArray(filters) && filters.flatMap(a => a.services))"
                                 v-bind:value="option.id">
                             {{ option.name }}
                         </option>
@@ -135,9 +135,7 @@
                 customButtons: {
                     createSeanceButton: {
                         text: 'Добавить сеанс',
-                        click: function () {
-                            alert('clicked the custom button!');
-                        }
+                        click: this.handleDateClick
                     }
                 }
             };
