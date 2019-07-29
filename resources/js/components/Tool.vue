@@ -31,8 +31,8 @@
             </div>
         </div>
 
+        <!--                @dateClick="handleDateClick"-->
         <FullCalendar
-                @dateClick="handleDateClick"
                 @eventClick="handleEventClick"
                 @eventRender="handleEventRender"
                 default-view="timeGridWeek"
@@ -45,10 +45,11 @@
                 :now-indicator="true"
                 :custom-buttons="customButtons"
                 :header="{
-                left: 'prev,next today createSeanceButton',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            }"
+                    left: 'prev,next today createSeanceButton',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                }"
+                :allDaySlot="allDaySlot"
         />
     </div>
 </template>
@@ -107,11 +108,7 @@
             handleEventRender(info) {
                 new Tooltip(info.el, {
                     html: true,
-                    title: `<h4>${info.event.extendedProps.service}</h4>` +
-                        `<p>${info.event.extendedProps.description}</p>` +
-                        `<p>${info.event.extendedProps.price} руб.</p>` +
-                        `<p>${info.event.extendedProps.duration} минут</p>` +
-                        `<p>${info.event.extendedProps.client}</p>`,
+                    title: info.event.extendedProps.popup,
                     placement: 'top',
                     trigger: 'hover',
                     container: 'body'
@@ -137,7 +134,8 @@
                         text: 'Добавить сеанс',
                         click: this.handleDateClick
                     }
-                }
+                },
+                allDaySlot: false
             };
         },
         mounted() {
@@ -166,7 +164,11 @@
     }
 
     .fc-today {
-        background-color: inherit !important;
+        background-color: #f4f7fa !important;
+    }
+
+    .fc-day {
+        background-color: white;
     }
 
     .select-w {
@@ -186,5 +188,13 @@
 
     .fc-button {
         border-radius: 0.5rem;
+    }
+
+    .fc-time-grid .fc-event {
+        min-height: 20px;
+    }
+
+    .fc-time-grid-container {
+        height: 100% !important;
     }
 </style>
