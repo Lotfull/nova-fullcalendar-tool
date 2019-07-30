@@ -10,27 +10,4 @@ use Lotfull\NovaFullcalendarTool\Http\Middleware\Authorize;
 
 class ToolServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'calendar');
-
-        Nova::serving(function (ServingNova $event) {
-            //
-        });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 }

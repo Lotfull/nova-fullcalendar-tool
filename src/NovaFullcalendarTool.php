@@ -17,14 +17,4 @@ class NovaFullcalendarTool extends Tool
         Nova::script('calendar', __DIR__.'/../dist/js/tool.js');
         Nova::style('calendar', __DIR__.'/../dist/css/tool.css');
     }
-
-    /**
-     * Build the view that renders the navigation links for the tool.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function renderNavigation()
-    {
-        return view('calendar::navigation');
-    }
 }
