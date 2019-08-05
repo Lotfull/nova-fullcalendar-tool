@@ -71,9 +71,9 @@
         },
         methods: {
             filter_update() {
-                this.set_events()
+                this.set_data()
             },
-            fetch_seances() {
+            fetch_data() {
                 let query = seances_request_url;
                 if (this.service_selected)
                     query += `?service=${this.service_selected}`;
@@ -82,13 +82,18 @@
 
                 return axios.get(query)
             },
-            fetch_filters() {
-                return axios.get(filters_request_url)
+            set_data() {
+                return this.fetch_data().then(response => {
+                    if (response.data) {
+                        this.calendarEvents = response.data['events'];
+                        this.filters = response.data['filters'];
+                        this.settings = response.data['settings'];
+                    }
+                });
             },
-            set_events() {
-                this.fetch_seances().then(response => {
-                    if (response.data)
-                        this.calendarEvents = response.data;
+            update_with_timeout() {
+                this.set_data().then(() => {
+                    setTimeout(this.update_with_timeout, this.settings.timeout)
                 });
             },
             handleDateClick(info) {
@@ -120,6 +125,9 @@
                 club_selected: '',
                 service_selected: '',
                 filters: {},
+                settings: {
+                    timeout: 30000
+                },
                 calendarPlugins: [
                     dayGridPlugin,
                     timeGridPlugin,
@@ -139,10 +147,7 @@
             };
         },
         mounted() {
-            this.set_events();
-            this.fetch_filters().then(response => {
-                this.filters = response.data;
-            });
+            this.update_with_timeout()
         },
     }
 
