@@ -84,7 +84,7 @@
             },
             set_data() {
                 return this.fetch_data().then(response => {
-                    if (response.data) {
+                    if (response.data && response.data['events'] != null) {
                         this.calendarEvents = response.data['events'];
                         this.filters = response.data['filters'];
                         this.settings = response.data['settings'];
